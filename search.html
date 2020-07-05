@@ -1,0 +1,104 @@
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<script>
+var app = angular.module('myApp', []);
+app.controller('myCtrl', function($scope) {
+    console.log('my ctrl')
+    $scope.algo = 'linear';
+    $scope.search= function() {
+        var inputData = $scope.input_text.split(',');
+        if ($scope.algo == 'linear') {
+            linearSearch(inputData, $scope.search_text);
+        } else if ($scope.algo == 'binary') {
+            binarySearch(inputData, $scope.search_text);
+        }
+    };
+
+    var linearSearch = function(inputData, searchText) {
+        $scope.displayResult = [];
+        $scope.displayList = inputData;
+        $scope.displaySearch = searchText;
+        for(var i=0; i<inputData.length; i++) {
+            if (inputData[i] == searchText) {
+                $scope.displayResult.push("ROUND " + (i+1) + " FOUND: " + inputData[i] + '==' + searchText);
+                break;
+            } else {
+                $scope.displayResult.push("ROUND " + (i+1) + "===> " + inputData[i] + '!=' + searchText);
+            }
+        }
+    }
+
+    var binarySearch = function (inputData, searchText) {
+        $scope.displayResult = [];
+        var sortedData = inputData.sort();
+        $scope.displayList = sortedData;
+        $scope.displaySearch = searchText;
+        var min = 1;
+        var max = sortedData.length;
+        var mid = Math.floor((min+max)/2);
+        console.log(min, max, mid, $scope.algo);
+        var round = 0;
+        var isFound = false;
+        while (!isFound) {
+            round++;
+            console.log('round', round, 'mid min max', mid, min, max,'value', sortedData[mid]);
+            if (max < min) {
+                if (sortedData[max] == searchText) {
+                    $scope.displayResult.push('ROUND ' + round + "==>" + sortedData[max] + '==' + searchText);
+                }
+                break;
+            }
+            
+            var mid = min + Math.floor((max-min)/2);
+            
+            if (sortedData[mid] < searchText) {
+                min = mid+1;
+                $scope.displayResult.push("ROUND " + round + "==>" + sortedData[mid] + "!=" + searchText);
+            }
+            if (sortedData[mid] > searchText) {
+                max = mid-1;
+                $scope.displayResult.push("ROUND " + round + "==>" + sortedData[mid] + "!=" + searchText);
+            }
+
+            if (sortedData[mid] == searchText) {
+                $scope.displayResult.push('ROUND ' + round + "==>" + sortedData[mid] + '==' + searchText);
+                break;
+            }
+            if (round > sortedData.length) break;
+        }
+        
+    }
+});
+
+</script>
+<!DOCTYPE html>
+<html lang="en-US" ng-app="myApp">
+<meta charset="utf-8"/>
+<body>
+    <div ng-controller="myCtrl">
+        List <input type="text" name="input" ng-model="input_text"/>
+        <br/>
+        ค้นหา <input type="text" name="search_text" ng-model="search_text"/> <button ng-click="search(algo)">ค้นหา</button>
+        <br/>
+        ประเภทการค้นหา
+        <br/>
+        {{algo}}
+        <select name="algo" ng-model="algo">
+            <option value="linear" ng-selected="algo == 'linear'">Linear Search</option>
+            <option value="binary" ng-selected="algo == 'binary'">Binary Search</option>
+            <option value="bubble" ng-selected="algo == 'bubble'">Bubble Search</option>
+        </select><br/>
+        Result <br/>
+        
+        List: {{displayList}}<br/>
+        Search:  {{displaySearch}}<br>
+        Result ::: <br>
+        <div style="border: solid 1px;">
+            <p ng-repeat="row in displayResult">
+               {{row}}
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>
