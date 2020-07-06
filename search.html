@@ -11,6 +11,8 @@ app.controller('myCtrl', function($scope) {
             linearSearch(inputData, $scope.search_text);
         } else if ($scope.algo == 'binary') {
             binarySearch(inputData, $scope.search_text);
+        } else if ($scope.algo == 'bubble') {
+            bubbleSort(angular.copy(inputData), $scope.search_text);
         }
     };
 
@@ -27,6 +29,32 @@ app.controller('myCtrl', function($scope) {
             }
         }
     }
+
+    var bubbleSort = function (inputData) {
+        $scope.displayResult = [];
+        $scope.displayList = inputData;
+        var sorted = false;
+        var n = inputData.length-1;
+        var round = 0;
+        while(!sorted) {
+            sorted = true;
+            for (var i=0; i < n; i++) {
+                console.log('i', i, i+1);
+                console.log('compare',  inputData[i], inputData[i+1]);
+                if (parseInt(inputData[i]) > parseInt(inputData[i+1])) {
+                    var temp = inputData[i];
+                    inputData[i] = inputData[i+1];
+                    inputData[i+1] = temp;
+                    sorted = false;
+                    console.log('swap', i, i+1,  inputData[i], inputData[i+1], inputData);
+                }
+            }
+            console.log(inputData);
+            // last char sorted
+            n--;
+        }
+    }
+
 
     var binarySearch = function (inputData, searchText) {
         $scope.displayResult = [];
@@ -67,7 +95,7 @@ app.controller('myCtrl', function($scope) {
             if (round > sortedData.length) break;
         }
         
-    }
+    };
 });
 
 </script>
